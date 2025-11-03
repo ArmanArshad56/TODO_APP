@@ -1,12 +1,3 @@
-// lib/main.dart
-// Flutter UI skeleton matching the user's sketch (blue/white/black)
-// Screens:
-// 1) FolderListScreen (search + list + add)
-// 2) NewFolderScreen (text + Done)
-// 3) FolderSelectScreen (search + selectable folder rows)
-// 4) NoteEditorScreen (editor with back + Done)
-// 5) FolderDetailScreen (folder header + search + notes list)
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -76,81 +67,59 @@ class NotesApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: theme,
       initialRoute: FolderListScreen.route,
+      onGenerateRoute: (settings) {
+        // Changed to onGenerateRoute for dynamic arguments
+        if (settings.name == FolderDetailScreen.route) {
+          final args = settings.arguments as String?;
+          return MaterialPageRoute(
+            builder: (_) => FolderDetailScreen(
+              folderName: args ?? 'Default',
+            ), // Dynamic folderName
+          );
+        }
+        // Other routes as is
+        return null;
+      },
       routes: {
         FolderListScreen.route: (_) => const FolderListScreen(),
         NewFolderScreen.route: (_) => const NewFolderScreen(),
         FolderSelectScreen.route: (_) => const FolderSelectScreen(),
         NoteEditorScreen.route: (_) => const NoteEditorScreen(),
-        FolderDetailScreen.route: (_) =>
-            const FolderDetailScreen(folderName: 'Arman'),
       },
     );
   }
 }
 
-// --- Mock data holder (replace later with Hive/SQLite + Firebase sync) ---
-// class AppState extends ChangeNotifier {
-//   static final AppState instance = AppState._();
-//   AppState._();
-
-//   final List<String> folders = ['Arman', 'Ideas', 'Today'];
-//   final Map<String, List<Note>> notes = {
-//     'Arman': [Note('Shopping list', 'Buy milk, eggs, rice', DateTime.now())],
-//     'Ideas': [
-//       Note('App concept', 'Face QR idea, link socials', DateTime.now()),
-//     ],
-//     'Today': [Note('Workout', 'Push/pull/legs', DateTime.now())],
-//   };
-
-//   void addFolder(String name) {
-//     if (name.trim().isEmpty) return;
-//     if (!folders.contains(name)) {
-//       folders.add(name);
-//       notes[name] = [];
-//       notifyListeners();
-//     }
-//   }
-
-//   void addNote(String folder, Note note) {
-//     notes.putIfAbsent(folder, () => []);
-//     notes[folder]!.add(note);
-//     notifyListeners();
-//   }
-// }
-
 class AppState extends ChangeNotifier {
   static final AppState instance = AppState._();
   AppState._();
-  final Map<String, List<Note>> notes = {}; // Store notes by folder
-  final List<String> folders = ['Arman', 'Ideas', 'Today'];
-  // final Map<String, List<Note>> notes = {
-  //   'Arman': [Note('Shopping list', 'Buy milk, eggs, rice', DateTime.now())],
-  //   'Ideas': [
-  //     Note('App concept', 'Face QR idea, link socials', DateTime.now()),
-  //   ],
-  //   'Today': [Note('Workout', 'Push/pull/legs', DateTime.now())],
-  // };
 
-  // Folder ko remove karne ka function
-  void removeFolder(String folderName) {
-    folders.remove(folderName); // Folder ko remove karna
-    notes.remove(folderName); // Associated notes ko bhi remove karna
-    notifyListeners(); // UI ko update karna
-  }
+  final List<String> folders = []; // Uncommented for mock data
+  final Map<String, List<Note>> notes = {
+    // 'Arman': [Note('Shopping list', 'Buy milk, eggs, rice', DateTime.now())],
+    // 'Ideas': [Note('App concept', 'Face QR idea, link socials', DateTime.now())],
+    // 'Today': [Note('Workout', 'Push/pull/legs', DateTime.now())],
+  };
 
-  // Update this to notify listeners on changes
+  // Removed duplicates, used this one
   void addFolder(String name) {
     if (name.trim().isEmpty) return;
     if (!folders.contains(name)) {
       folders.add(name);
       notes[name] = [];
-      notifyListeners(); // This will notify listeners of changes
+      notifyListeners();
     }
   }
 
   void addNote(String folder, Note note) {
     notes.putIfAbsent(folder, () => []);
     notes[folder]!.add(note);
+    notifyListeners();
+  }
+
+  void removeFolder(String folderName) {
+    folders.remove(folderName);
+    notes.remove(folderName);
     notifyListeners();
   }
 }
@@ -162,7 +131,8 @@ class Note {
   Note(this.title, this.body, this.createdAt);
 }
 
-// --- Reusable widgets ---
+// Reusable widgets same as yours...
+
 class SearchField extends StatelessWidget {
   final String hint;
   final ValueChanged<String>? onChanged;
@@ -201,7 +171,7 @@ class SectionTitle extends StatelessWidget {
   }
 }
 
-// --- Screen 1: Folder List ---
+// FolderListScreen with changes for delete
 class FolderListScreen extends StatefulWidget {
   static const route = '/folders';
   const FolderListScreen({super.key});
@@ -212,10 +182,11 @@ class FolderListScreen extends StatefulWidget {
 
 class _FolderListScreenState extends State<FolderListScreen> {
   String q = '';
-  String? selectedFolder;
+  final Set<String> selectedFolders = {}; // For delete selection
+
   @override
   Widget build(BuildContext context) {
-    final app = Provider.of<AppState>(context); // Listen to changes in AppState
+    final app = Provider.of<AppState>(context);
     final folders = app.folders
         .where((f) => f.toLowerCase().contains(q.toLowerCase()))
         .toList();
@@ -224,27 +195,21 @@ class _FolderListScreenState extends State<FolderListScreen> {
       appBar: AppBar(
         title: SectionTitle(
           'Folders',
-          // actions: [Icon(Icons.edit_outlined)],
-          // actions: [
-          //   // Edit action
-          //   IconButton(icon: Icon(Icons.edit_outlined), onPressed: () {}),
-          // ],
           actions: [
-            // Edit action ke liye delete button add karte hain
             IconButton(
               icon: const Icon(Icons.delete),
-              onPressed: selectedFolder != null
-                  ? () {
-                      // Agar folder select kiya hai to delete karenge
-                      _showDeleteDialog(context); // delete confirmation dialog
-                    }
-                  : null, // Agar koi folder select nahi kiya to button disabled hoga
+              onPressed: selectedFolders.isNotEmpty
+                  ? () =>
+                        _showDeleteDialog(
+                          context,
+                        ) // Press pe dialog for confirm
+                  : null, // Disabled if no select
             ),
           ],
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             SearchField(onChanged: (v) => setState(() => q = v)),
@@ -255,31 +220,38 @@ class _FolderListScreenState extends State<FolderListScreen> {
                 separatorBuilder: (_, __) => const SizedBox(height: 8),
                 itemBuilder: (_, i) {
                   final name = folders[i];
+                  final isSelected = selectedFolders.contains(
+                    name,
+                  ); // Check if selected
                   return ListTile(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    tileColor: Colors.grey.shade100,
+                    tileColor: isSelected
+                        ? Colors.blue.shade100
+                        : Colors.grey.shade100, // Highlight selected
                     leading: const Icon(Icons.folder_outlined),
                     title: Text(
                       name,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
-
-                    // onTap: () => Navigator.pushNamed(
-                    //   context,
-                    //   FolderDetailScreen.route,
-                    //   arguments: name,
-                    // ),
                     onTap: () {
-                      setState(() {
-                        selectedFolder = name; // Folder select karna
-                      });
+                      // Sirf navigate, no select
                       Navigator.pushNamed(
                         context,
                         FolderDetailScreen.route,
                         arguments: name,
                       );
+                    },
+                    onLongPress: () {
+                      // Long press se select for delete
+                      setState(() {
+                        if (isSelected) {
+                          selectedFolders.remove(name);
+                        } else {
+                          selectedFolders.add(name);
+                        }
+                      });
                     },
                   );
                 },
@@ -295,31 +267,33 @@ class _FolderListScreenState extends State<FolderListScreen> {
     );
   }
 
-  // Function to show a dialog for confirmation before deleting a folder
+  // Remove Function code...
   void _showDeleteDialog(BuildContext context) {
+    final selectedList = selectedFolders.join(', ');
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Delete Folder'),
           content: Text(
-            'Are you sure you want to delete the folder "$selectedFolder"',
+            'Kya aap "$selectedFolders" folder delete karna chahte hain? Notes bhi delete ho jaayenge.',
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                // agar user ne confirm kiya to folder delete karenge
-                if (selectedFolder != null) {
-                  AppState.instance.removeFolder(selectedFolder!);
+                // delete all selected
+                for (final folder in List.from(selectedFolders)) {
+                  // Copy to avoid modification during iteration
+                  AppState.instance.removeFolder(folder);
                 }
+                setState(
+                  () => selectedFolders.clear(),
+                ); // Clear selection after delete
                 Navigator.of(context).pop();
-                setState(() {});
               },
               child: const Text('Delete'),
             ),
@@ -330,7 +304,9 @@ class _FolderListScreenState extends State<FolderListScreen> {
   }
 }
 
-// --- Screen 2: New Folder ---
+// Baaki screens same as yours, no major changes needed...
+// (NewFolderScreen, FolderSelectScreen, NoteEditorScreen, FolderDetailScreen ko as is rakha, sirf routes fix kiye upar)
+
 class NewFolderScreen extends StatefulWidget {
   static const route = '/new-folder';
   const NewFolderScreen({super.key});
@@ -352,7 +328,6 @@ class _NewFolderScreenState extends State<NewFolderScreen> {
             onPressed: () {
               final folderName = controller.text.trim();
               if (folderName.isNotEmpty) {
-                // folder ko add karna
                 AppState.instance.addFolder(folderName);
                 Navigator.pop(context);
               }
@@ -370,20 +345,6 @@ class _NewFolderScreenState extends State<NewFolderScreen> {
               controller: controller,
               decoration: const InputDecoration(hintText: 'Folder name'),
             ),
-            // const SizedBox(height: 24),
-            // Container(
-            //   height: 140,
-            //   decoration: BoxDecoration(
-            //     color: Colors.grey.shade100,
-            //     borderRadius: BorderRadius.circular(16),
-            //     border: Border.all(color: Colors.grey.shade300),
-            //   ),
-            //   alignment: Alignment.center,
-            //   // child: Text(
-            //   //   'typing…',
-            //   //   style: TextStyle(color: Colors.grey.shade600),
-            //   // ),
-            // ),
           ],
         ),
       ),
@@ -391,7 +352,6 @@ class _NewFolderScreenState extends State<NewFolderScreen> {
   }
 }
 
-// --- Screen 3: Folder Select (for moving/saving) ---
 class FolderSelectScreen extends StatefulWidget {
   static const route = '/select-folder';
   const FolderSelectScreen({super.key});
@@ -447,13 +407,12 @@ class _FolderSelectScreenState extends State<FolderSelectScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.pop(context, selectedFolder),
-        child: const Icon(Icons.star_border), // matches sketch star icon
+        child: const Icon(Icons.star_border),
       ),
     );
   }
 }
 
-// --- Screen 4: Note Editor ---
 class NoteEditorScreen extends StatefulWidget {
   static const route = '/editor';
   const NoteEditorScreen({super.key});
@@ -466,7 +425,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   final title = TextEditingController();
   final description = TextEditingController();
   String currentFolder = 'Today';
-  bool _inited = false; // Ensure arguments are only read once
+  bool _inited = false;
   Note? editingNote;
 
   @override
@@ -477,7 +436,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     final args = ModalRoute.of(context)?.settings.arguments as Map?;
     if (args != null) {
       currentFolder = args['folder'] ?? 'Today';
-      editingNote = args['note']; // Get the note object if it exists
+      editingNote = args['note'];
 
       if (editingNote != null) {
         title.text = editingNote!.title;
@@ -490,17 +449,16 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
   void onSaved() async {
     if (editingNote != null) {
-      // If editing an existing note, update it
       editingNote!.title = title.text;
       editingNote!.body = description.text;
+      AppState.instance.notifyListeners(); // Added to update UI
     } else {
-      // Otherwise, create a new note
       AppState.instance.addNote(
         currentFolder,
         Note(title.text, description.text, DateTime.now()),
       );
     }
-    Navigator.pop(context); // Return to the previous screen
+    Navigator.pop(context);
   }
 
   @override
@@ -512,14 +470,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(currentFolder),
-        actions: [
-          TextButton(
-            child: const Text('Done'),
-            onPressed: () {
-              onSaved();
-            },
-          ),
-        ],
+        actions: [TextButton(onPressed: onSaved, child: const Text('Done'))],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -545,18 +496,15 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.all(12),
         child: FilledButton.icon(
-          onPressed: () {
-            onSaved();
-          },
+          onPressed: onSaved,
           icon: const Icon(Icons.folder_open),
-          label: Text('Save'),
+          label: const Text('Save'),
         ),
       ),
     );
   }
 }
 
-// --- Screen 5: Folder Detail (notes list) ---
 class FolderDetailScreen extends StatefulWidget {
   static const route = '/folder';
   final String folderName;
@@ -571,9 +519,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String folderArg =
-        (ModalRoute.of(context)?.settings.arguments as String?) ??
-        widget.folderName;
+    final folderArg = widget.folderName; // Used widget.folderName directly
     final app = AppState.instance;
     final all = app.notes[folderArg] ?? [];
     final filtered = all
@@ -616,14 +562,10 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
                 const Spacer(),
                 TextButton.icon(
                   onPressed: () async {
-                    // Pass the folder name to the editor screen
                     await Navigator.pushNamed(
                       context,
                       NoteEditorScreen.route,
-                      arguments: {
-                        'folder': folderArg,
-                        'note': null,
-                      }, // New note
+                      arguments: {'folder': folderArg, 'note': null},
                     );
                     setState(() {});
                   },
@@ -651,14 +593,10 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
                     ),
                     trailing: const Icon(Icons.bookmark_border),
                     onTap: () async {
-                      // Pass the selected note to the editor screen for editing
                       await Navigator.pushNamed(
                         context,
                         NoteEditorScreen.route,
-                        arguments: {
-                          'folder': folderArg,
-                          'note': n,
-                        }, // Edit existing note
+                        arguments: {'folder': folderArg, 'note': n},
                       );
                       setState(() {});
                     },
