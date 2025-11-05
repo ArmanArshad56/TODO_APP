@@ -10,9 +10,10 @@ class SectionTitle extends StatelessWidget {
       children: [
         Text(
           text,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+          ),
         ),
         const Spacer(),
         ...actions,
