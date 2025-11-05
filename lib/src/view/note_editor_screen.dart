@@ -40,7 +40,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     if (editingNote != null) {
       editingNote!.title = title.text;
       editingNote!.body = description.text;
-      AppState.instance; // Added to update UI
+      AppState.instance;
     } else {
       AppState.instance.addNote(
         currentFolder,

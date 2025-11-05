@@ -16,7 +16,7 @@ class FolderListScreen extends StatefulWidget {
 
 class _FolderListScreenState extends State<FolderListScreen> {
   String q = '';
-  final Set<String> selectedFolders = {}; // For delete selection
+  final Set<String> selectedFolders = {};
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +33,8 @@ class _FolderListScreenState extends State<FolderListScreen> {
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: selectedFolders.isNotEmpty
-                  ? () =>
-                        _showDeleteDialog(
-                          context,
-                        ) // Press pe dialog for confirm
-                  : null, // Disabled if no select
+                  ? () => _showDeleteDialog(context)
+                  : null,
             ),
           ],
         ),
@@ -54,23 +51,20 @@ class _FolderListScreenState extends State<FolderListScreen> {
                 separatorBuilder: (_, __) => const SizedBox(height: 8),
                 itemBuilder: (_, i) {
                   final name = folders[i];
-                  final isSelected = selectedFolders.contains(
-                    name,
-                  ); // Check if selected
+                  final isSelected = selectedFolders.contains(name);
                   return ListTile(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                     tileColor: isSelected
                         ? Colors.blue.shade100
-                        : Colors.grey.shade100, // Highlight selected
+                        : Colors.grey.shade100,
                     leading: const Icon(Icons.folder_outlined),
                     title: Text(
                       name,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                     onTap: () {
-                      // Sirf navigate, no select
                       Navigator.pushNamed(
                         context,
                         FolderDetailScreen.route,
@@ -78,7 +72,6 @@ class _FolderListScreenState extends State<FolderListScreen> {
                       );
                     },
                     onLongPress: () {
-                      // Long press se select for delete
                       setState(() {
                         if (isSelected) {
                           selectedFolders.remove(name);
@@ -101,7 +94,6 @@ class _FolderListScreenState extends State<FolderListScreen> {
     );
   }
 
-  // Remove Function code...
   void _showDeleteDialog(BuildContext context) {
     selectedFolders.join(', ');
     showDialog(
@@ -119,14 +111,10 @@ class _FolderListScreenState extends State<FolderListScreen> {
             ),
             TextButton(
               onPressed: () {
-                // delete all selected
                 for (final folder in List.from(selectedFolders)) {
-                  // Copy to avoid modification during iteration
                   AppState.instance.removeFolder(folder);
                 }
-                setState(
-                  () => selectedFolders.clear(),
-                ); // Clear selection after delete
+                setState(() => selectedFolders.clear());
                 Navigator.of(context).pop();
               },
               child: const Text('Delete'),

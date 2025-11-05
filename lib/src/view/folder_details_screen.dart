@@ -17,7 +17,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final folderArg = widget.folderName; // Used widget.folderName directly
+    final folderArg = widget.folderName;
     final app = AppState.instance;
     final all = app.notes[folderArg] ?? [];
     final filtered = all
