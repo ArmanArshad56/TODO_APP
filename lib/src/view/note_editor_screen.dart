@@ -38,13 +38,26 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
   void onSaved() async {
     if (editingNote != null) {
-      editingNote!.title = title.text;
-      editingNote!.body = description.text;
-      AppState.instance;
+      final updatedNote = Note(
+        id: editingNote!.id,
+        title: title.text,
+        body: description.text,
+        createdAt: editingNote!.createdAt,
+      );
+      AppState.instance.updateNote(currentFolder, editingNote!, updatedNote);
     } else {
+      // Generate a unique ID for new notes
+      final noteId =
+          DateTime.now().millisecondsSinceEpoch.toString() +
+          (title.text.hashCode + description.text.hashCode).toString();
       AppState.instance.addNote(
         currentFolder,
-        Note(title.text, description.text, DateTime.now()),
+        Note(
+          id: noteId,
+          title: title.text,
+          body: description.text,
+          createdAt: DateTime.now(),
+        ),
       );
     }
     Navigator.pop(context);

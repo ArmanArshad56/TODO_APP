@@ -7,8 +7,21 @@ import 'package:todo_app/src/view/folder_selection_screen.dart';
 import 'package:todo_app/src/view/new_folder_screen.dart';
 import 'package:todo_app/src/view/note_editor_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:todo_app/src/model/note_model.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Hive
+  await Hive.initFlutter();
+
+  // Register adapters
+  Hive.registerAdapter(NoteAdapter());
+
+  // Initialize AppState and load data
+  await AppState.instance.initialize();
+
   runApp(
     ChangeNotifierProvider.value(
       value: AppState.instance,
