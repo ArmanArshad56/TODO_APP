@@ -3,7 +3,9 @@
 import 'package:todo_app/src/controller/appstate_controller.dart';
 import 'package:todo_app/src/widgets/search_field.dart';
 import 'package:todo_app/src/theme/app_theme.dart';
+import 'package:todo_app/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FolderSelectScreen extends StatefulWidget {
   static const route = '/select-folder';
@@ -28,19 +30,32 @@ class _FolderSelectScreenState extends State<FolderSelectScreen> {
       appBar: AppBar(title: const Text('Select Folder')),
       body: folders.isEmpty && q.isEmpty
           ? _buildEmptyState()
-          : Padding(
-              padding: const EdgeInsets.all(20),
+          : ResponsiveContainer(
+              padding: Responsive.padding(context),
               child: Column(
                 children: [
                   SearchField(onChanged: (v) => setState(() => q = v)),
-                  const SizedBox(height: 24),
+                  SizedBox(
+                    height: Responsive.spacing(
+                      context,
+                      mobile: 24.0,
+                      tablet: 28.0,
+                      desktop: 32.0,
+                    ).h,
+                  ),
                   Expanded(
                     child: folders.isEmpty
                         ? _buildEmptySearchState()
                         : ListView.separated(
                             itemCount: folders.length,
-                            separatorBuilder: (_, __) =>
-                                const SizedBox(height: 12),
+                            separatorBuilder: (_, __) => SizedBox(
+                              height: Responsive.spacing(
+                                context,
+                                mobile: 12.0,
+                                tablet: 16.0,
+                                desktop: 20.0,
+                              ).h,
+                            ),
                             itemBuilder: (_, i) {
                               final name = folders[i];
                               final checked = name == selectedFolder;
@@ -52,7 +67,7 @@ class _FolderSelectScreenState extends State<FolderSelectScreen> {
               ),
             ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(20),
+        padding: Responsive.padding(context),
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -87,36 +102,81 @@ class _FolderSelectScreenState extends State<FolderSelectScreen> {
       color: Colors.transparent,
       child: InkWell(
         onTap: () => setState(() => selectedFolder = name),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(
+          Responsive.borderRadius(
+            context,
+            mobile: 16.0,
+            tablet: 20.0,
+            desktop: 24.0,
+          ).r,
+        ),
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: Responsive.cardPadding(context),
           decoration: BoxDecoration(
             color: checked
                 ? AppTheme.primaryPurple.withOpacity(0.1)
                 : Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(
+              Responsive.borderRadius(
+                context,
+                mobile: 16.0,
+                tablet: 20.0,
+                desktop: 24.0,
+              ).r,
+            ),
             border: Border.all(
               color: checked ? AppTheme.primaryPurple : Colors.grey.shade200,
-              width: checked ? 2 : 1,
+              width: Responsive.value<double>(
+                context,
+                mobile: checked ? 2.0 : 1.0,
+                tablet: checked ? 2.5 : 1.5,
+                desktop: checked ? 3.0 : 2.0,
+              ).w,
             ),
           ),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(
+                  Responsive.spacing(
+                    context,
+                    mobile: 12.0,
+                    tablet: 14.0,
+                    desktop: 16.0,
+                  ).r,
+                ),
                 decoration: BoxDecoration(
                   color: checked
                       ? AppTheme.primaryPurple
                       : AppTheme.primaryPurple.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(
+                    Responsive.borderRadius(
+                      context,
+                      mobile: 12.0,
+                      tablet: 14.0,
+                      desktop: 16.0,
+                    ).r,
+                  ),
                 ),
                 child: Icon(
                   Icons.folder_rounded,
                   color: checked ? Colors.white : AppTheme.primaryPurple,
-                  size: 24,
+                  size: Responsive.fontSize(
+                    context,
+                    mobile: 24.0,
+                    tablet: 26.0,
+                    desktop: 28.0,
+                  ).sp,
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(
+                width: Responsive.spacing(
+                  context,
+                  mobile: 16.0,
+                  tablet: 18.0,
+                  desktop: 20.0,
+                ).w,
+              ),
               Expanded(
                 child: Text(
                   name,
@@ -130,7 +190,12 @@ class _FolderSelectScreenState extends State<FolderSelectScreen> {
                 Icon(
                   Icons.check_circle_rounded,
                   color: AppTheme.primaryPurple,
-                  size: 24,
+                  size: Responsive.fontSize(
+                    context,
+                    mobile: 24.0,
+                    tablet: 26.0,
+                    desktop: 28.0,
+                  ).sp,
                 ),
             ],
           ),

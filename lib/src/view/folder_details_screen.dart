@@ -1,9 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:todo_app/src/controller/appstate_controller.dart';
 import 'package:todo_app/src/view/note_editor_screen.dart';
 import 'package:todo_app/src/widgets/search_field.dart';
 import 'package:todo_app/src/theme/app_theme.dart';
+import 'package:todo_app/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -42,13 +44,20 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
       ),
       body: all.isEmpty && q.isEmpty
           ? _buildEmptyState()
-          : Padding(
-              padding: const EdgeInsets.all(20),
+          : ResponsiveContainer(
+              padding: Responsive.padding(context),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SearchField(onChanged: (v) => setState(() => q = v)),
-                  const SizedBox(height: 24),
+                  SizedBox(
+                    height: Responsive.spacing(
+                      context,
+                      mobile: 24.0,
+                      tablet: 28.0,
+                      desktop: 32.0,
+                    ).h,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -67,25 +76,56 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
                           );
                           setState(() {});
                         },
-                        icon: const Icon(Icons.add_rounded, size: 20),
+                        icon: Icon(
+                          Icons.add_rounded,
+                          size: Responsive.fontSize(
+                            context,
+                            mobile: 20.0,
+                            tablet: 22.0,
+                            desktop: 24.0,
+                          ).sp,
+                        ),
                         label: const Text('New Note'),
                         style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Responsive.spacing(
+                              context,
+                              mobile: 20.0,
+                              tablet: 24.0,
+                              desktop: 28.0,
+                            ).w,
+                            vertical: Responsive.spacing(
+                              context,
+                              mobile: 12.0,
+                              tablet: 14.0,
+                              desktop: 16.0,
+                            ).h,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: Responsive.spacing(
+                      context,
+                      mobile: 16.0,
+                      tablet: 20.0,
+                      desktop: 24.0,
+                    ).h,
+                  ),
                   Expanded(
                     child: filtered.isEmpty
                         ? _buildEmptySearchState()
                         : ListView.separated(
                             itemCount: filtered.length,
-                            separatorBuilder: (_, __) =>
-                                const SizedBox(height: 12),
+                            separatorBuilder: (_, __) => SizedBox(
+                              height: Responsive.spacing(
+                                context,
+                                mobile: 12.0,
+                                tablet: 16.0,
+                                desktop: 20.0,
+                              ).h,
+                            ),
                             itemBuilder: (_, i) {
                               final n = filtered[i];
                               return _buildNoteCard(n, folderArg);
@@ -117,18 +157,53 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
           );
           setState(() {});
         },
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(
+          Responsive.borderRadius(
+            context,
+            mobile: 16.0,
+            tablet: 20.0,
+            desktop: 24.0,
+          ).r,
+        ),
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: Responsive.cardPadding(context),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey.shade200, width: 1),
+            borderRadius: BorderRadius.circular(
+              Responsive.borderRadius(
+                context,
+                mobile: 16.0,
+                tablet: 20.0,
+                desktop: 24.0,
+              ).r,
+            ),
+            border: Border.all(
+              color: Colors.grey.shade200,
+              width: Responsive.value<double>(
+                context,
+                mobile: 1.0,
+                tablet: 1.5,
+                desktop: 2.0,
+              ).w,
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
+                blurRadius: Responsive.spacing(
+                  context,
+                  mobile: 10.0,
+                  tablet: 12.0,
+                  desktop: 14.0,
+                ).r,
+                offset: Offset(
+                  0,
+                  Responsive.spacing(
+                    context,
+                    mobile: 2.0,
+                    tablet: 3.0,
+                    desktop: 4.0,
+                  ).h,
+                ),
               ),
             ],
           ),
@@ -149,41 +224,103 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(
+                    width: Responsive.spacing(
+                      context,
+                      mobile: 12.0,
+                      tablet: 14.0,
+                      desktop: 16.0,
+                    ).w,
+                  ),
                   Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: EdgeInsets.all(
+                      Responsive.spacing(
+                        context,
+                        mobile: 8.0,
+                        tablet: 10.0,
+                        desktop: 12.0,
+                      ).r,
+                    ),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryPurple.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(
+                        Responsive.borderRadius(
+                          context,
+                          mobile: 8.0,
+                          tablet: 10.0,
+                          desktop: 12.0,
+                        ).r,
+                      ),
                     ),
                     child: Icon(
                       Icons.note_rounded,
                       color: AppTheme.primaryPurple,
-                      size: 20,
+                      size: Responsive.fontSize(
+                        context,
+                        mobile: 20.0,
+                        tablet: 22.0,
+                        desktop: 24.0,
+                      ).sp,
                     ),
                   ),
                 ],
               ),
               if (note.body.isNotEmpty) ...[
-                const SizedBox(height: 12),
+                SizedBox(
+                  height: Responsive.spacing(
+                    context,
+                    mobile: 12.0,
+                    tablet: 14.0,
+                    desktop: 16.0,
+                  ).h,
+                ),
                 Text(
                   note.body,
-                  style: Theme.of(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    height: Responsive.value<double>(
+                      context,
+                      mobile: 1.5,
+                      tablet: 1.6,
+                      desktop: 1.7,
+                    ),
+                  ),
+                  maxLines: Responsive.value<int>(
                     context,
-                  ).textTheme.bodyMedium?.copyWith(height: 1.5),
-                  maxLines: 3,
+                    mobile: 3,
+                    tablet: 4,
+                    desktop: 5,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
-              const SizedBox(height: 16),
+              SizedBox(
+                height: Responsive.spacing(
+                  context,
+                  mobile: 16.0,
+                  tablet: 18.0,
+                  desktop: 20.0,
+                ).h,
+              ),
               Row(
                 children: [
                   Icon(
                     Icons.access_time_rounded,
-                    size: 14,
+                    size: Responsive.fontSize(
+                      context,
+                      mobile: 14.0,
+                      tablet: 15.0,
+                      desktop: 16.0,
+                    ).sp,
                     color: AppTheme.textTertiary,
                   ),
-                  const SizedBox(width: 6),
+                  SizedBox(
+                    width: Responsive.spacing(
+                      context,
+                      mobile: 6.0,
+                      tablet: 8.0,
+                      desktop: 10.0,
+                    ).w,
+                  ),
                   Text(
                     isToday
                         ? 'Today at ${timeFormat.format(note.createdAt)}'
@@ -205,7 +342,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(32),
+            padding: EdgeInsets.all(32.r),
             decoration: BoxDecoration(
               color: AppTheme.primaryPurple.withOpacity(0.1),
               shape: BoxShape.circle,
@@ -216,15 +353,15 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
               color: AppTheme.primaryPurple.withOpacity(0.5),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           Text('No notes yet', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Create your first note in this folder',
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32.h),
           FilledButton.icon(
             onPressed: () async {
               await Navigator.pushNamed(
@@ -249,15 +386,15 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
         children: [
           Icon(
             Icons.search_off_rounded,
-            size: 64,
+            size: 64.sp,
             color: AppTheme.textTertiary,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.sp),
           Text(
             'No notes found',
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Try a different search term',
             style: Theme.of(context).textTheme.bodyMedium,

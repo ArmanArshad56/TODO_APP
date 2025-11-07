@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:todo_app/src/utils/responsive.dart';
 
 class SectionTitle extends StatelessWidget {
   final String text;
@@ -12,6 +14,12 @@ class SectionTitle extends StatelessWidget {
           text,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
+            fontSize: Responsive.fontSize(
+              context,
+              mobile: 16,
+              tablet: 18,
+              desktop: 10,
+            ).sp,
             letterSpacing: -0.5,
           ),
         ),

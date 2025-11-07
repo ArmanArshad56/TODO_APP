@@ -9,6 +9,7 @@ import 'package:todo_app/src/view/note_editor_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:todo_app/src/model/note_model.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,25 +36,34 @@ class NotesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Notes',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme(),
-      initialRoute: FolderListScreen.route,
-      onGenerateRoute: (settings) {
-        if (settings.name == FolderDetailScreen.route) {
-          final args = settings.arguments as String?;
-          return MaterialPageRoute(
-            builder: (_) => FolderDetailScreen(folderName: args ?? 'Default'),
-          );
-        }
-        return null;
-      },
-      routes: {
-        FolderListScreen.route: (_) => const FolderListScreen(),
-        NewFolderScreen.route: (_) => const NewFolderScreen(),
-        FolderSelectScreen.route: (_) => const FolderSelectScreen(),
-        NoteEditorScreen.route: (_) => const NoteEditorScreen(),
+    return ScreenUtilInit(
+      // Design sizes for different devices
+      designSize: const Size(375, 812), // Base design size (iPhone X)
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          title: 'Notes',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme(),
+          initialRoute: FolderListScreen.route,
+          onGenerateRoute: (settings) {
+            if (settings.name == FolderDetailScreen.route) {
+              final args = settings.arguments as String?;
+              return MaterialPageRoute(
+                builder: (_) =>
+                    FolderDetailScreen(folderName: args ?? 'Default'),
+              );
+            }
+            return null;
+          },
+          routes: {
+            FolderListScreen.route: (_) => const FolderListScreen(),
+            NewFolderScreen.route: (_) => const NewFolderScreen(),
+            FolderSelectScreen.route: (_) => const FolderSelectScreen(),
+            NoteEditorScreen.route: (_) => const NoteEditorScreen(),
+          },
+        );
       },
     );
   }

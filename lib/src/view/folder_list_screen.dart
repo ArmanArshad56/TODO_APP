@@ -1,11 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:todo_app/src/controller/appstate_controller.dart';
 import 'package:todo_app/src/view/folder_details_screen.dart';
 import 'package:todo_app/src/view/new_folder_screen.dart';
 import 'package:todo_app/src/widgets/search_field.dart';
 import 'package:todo_app/src/widgets/section_title.dart';
 import 'package:todo_app/src/theme/app_theme.dart';
+import 'package:todo_app/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,33 +47,57 @@ class _FolderListScreenState extends State<FolderListScreen> {
       ),
       body: folders.isEmpty && q.isEmpty
           ? _buildEmptyState()
-          : Padding(
-              padding: const EdgeInsets.all(20),
+          : ResponsiveContainer(
+              padding: Responsive.padding(context),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SearchField(onChanged: (v) => setState(() => q = v)),
-                  const SizedBox(height: 24),
+                  SizedBox(
+                    height: Responsive.spacing(
+                      context,
+                      mobile: 24.0,
+                      tablet: 28.0,
+                      desktop: 32.0,
+                    ).h,
+                  ),
                   if (folders.isNotEmpty)
                     Text(
                       '${folders.length} ${folders.length == 1 ? 'folder' : 'folders'}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
-                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: Responsive.spacing(
+                      context,
+                      mobile: 12.0,
+                      tablet: 16.0,
+                      desktop: 20.0,
+                    ).h,
+                  ),
                   Expanded(
                     child: folders.isEmpty
                         ? _buildEmptySearchState()
-                        : GridView.builder(
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
-                                  childAspectRatio: 1.1,
-                                ),
-                            itemCount: folders.length,
-                            itemBuilder: (_, i) {
-                              final name = folders[i];
+                        : ResponsiveGridView(
+                            padding: EdgeInsets.zero,
+                            crossAxisSpacing: Responsive.spacing(
+                              context,
+                              mobile: 10.0,
+                              tablet: 5.0,
+                              desktop: 6.0,
+                            ).w,
+                            mainAxisSpacing: Responsive.spacing(
+                              context,
+                              mobile: 16.0,
+                              tablet: 20.0,
+                              desktop: 34.0,
+                            ).h,
+                            childAspectRatio: Responsive.value<double>(
+                              context,
+                              mobile: 1.25,
+                              tablet: 0.9,
+                              desktop: 1.2,
+                            ),
+                            children: folders.map((name) {
                               final noteCount = app.notes[name]?.length ?? 0;
                               final isSelected = selectedFolders.contains(name);
                               return _buildFolderCard(
@@ -79,7 +105,7 @@ class _FolderListScreenState extends State<FolderListScreen> {
                                 noteCount,
                                 isSelected,
                               );
-                            },
+                            }).toList(),
                           ),
                   ),
                 ],
@@ -87,8 +113,26 @@ class _FolderListScreenState extends State<FolderListScreen> {
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.pushNamed(context, NewFolderScreen.route),
-        icon: const Icon(Icons.add_rounded),
-        label: const Text('New Folder'),
+        icon: Icon(
+          Icons.add_rounded,
+          size: Responsive.fontSize(
+            context,
+            mobile: 18,
+            tablet: 20,
+            desktop: 6,
+          ).sp,
+        ),
+        label: Text(
+          'New Folder',
+          style: TextStyle(
+            fontSize: Responsive.fontSize(
+              context,
+              mobile: 16,
+              tablet: 10,
+              desktop: 4,
+            ).sp,
+          ),
+        ),
       ),
     );
   }
@@ -143,56 +187,99 @@ class _FolderListScreenState extends State<FolderListScreen> {
                   ]
                 : [gradientColors[0], gradientColors[1]],
           ),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(
+            Responsive.borderRadius(
+              context,
+              mobile: 20.0,
+              tablet: 24.0,
+              desktop: 28.0,
+            ).r,
+          ),
           boxShadow: [
             BoxShadow(
               color: gradientColors[0].withOpacity(0.3),
-              blurRadius: isSelected ? 20 : 12,
-              offset: Offset(0, isSelected ? 8 : 4),
+              blurRadius: (isSelected ? 20 : 12).r,
+              offset: Offset(0, (isSelected ? 8 : 4).h),
             ),
           ],
         ),
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: Responsive.cardPadding(context),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(
+                      Responsive.spacing(
+                        context,
+                        mobile: 8.0,
+                        tablet: 14.0,
+                        desktop: 4.0,
+                      ).r,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(
+                        Responsive.borderRadius(
+                          context,
+                          mobile: 12.0,
+                          tablet: 14.0,
+                          desktop: 16.0,
+                        ).r,
+                      ),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.folder_rounded,
                       color: Colors.white,
-                      size: 32,
+                      size: Responsive.fontSize(
+                        context,
+                        mobile: 24.0,
+                        tablet: 36.0,
+                        desktop: 12.0,
+                      ).sp,
                     ),
                   ),
-                  const Spacer(),
+                  // const Spacer(),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: Responsive.fontSize(
+                            context,
+                            mobile: 24.0,
+                            tablet: 20.0,
+                            desktop: 14.0,
+                          ).sp,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: -0.5,
+                          // letterSpacing: -0.5,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(
+                        height: Responsive.spacing(
+                          context,
+                          mobile: 4.0,
+                          tablet: 6.0,
+                          desktop: 0.5,
+                        ).h,
+                      ),
                       Text(
                         '$noteCount ${noteCount == 1 ? 'note' : 'notes'}',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.9),
-                          fontSize: 13,
+                          fontSize: Responsive.fontSize(
+                            context,
+                            mobile: 13.0,
+                            tablet: 14.0,
+                            desktop: 10.0,
+                          ).sp,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -203,10 +290,27 @@ class _FolderListScreenState extends State<FolderListScreen> {
             ),
             if (isSelected)
               Positioned(
-                top: 12,
-                right: 12,
+                top: Responsive.spacing(
+                  context,
+                  mobile: 12.0,
+                  tablet: 14.0,
+                  desktop: 16.0,
+                ).h,
+                right: Responsive.spacing(
+                  context,
+                  mobile: 12.0,
+                  tablet: 14.0,
+                  desktop: 16.0,
+                ).w,
                 child: Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: EdgeInsets.all(
+                    Responsive.spacing(
+                      context,
+                      mobile: 2.5,
+                      tablet: 5.0,
+                      desktop: 6.0,
+                    ).r,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
@@ -214,7 +318,12 @@ class _FolderListScreenState extends State<FolderListScreen> {
                   child: Icon(
                     Icons.check_circle_rounded,
                     color: AppTheme.primaryPurple,
-                    size: 20,
+                    size: Responsive.fontSize(
+                      context,
+                      mobile: 20.0,
+                      tablet: 22.0,
+                      desktop: 24.0,
+                    ).sp,
                   ),
                 ),
               ),
@@ -230,32 +339,51 @@ class _FolderListScreenState extends State<FolderListScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(32),
+            padding: EdgeInsets.all(32.r),
             decoration: BoxDecoration(
               color: AppTheme.primaryPurple.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.folder_outlined,
-              size: 80,
+              size: Responsive.fontSize(
+                context,
+                mobile: 40,
+                tablet: 30,
+                desktop: 30,
+              ).sp,
               color: AppTheme.primaryPurple.withOpacity(0.5),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(
+            height: Responsive.spacing(
+              context,
+              mobile: 15,
+              tablet: 30,
+              desktop: 30,
+            ).h,
+          ),
           Text('No folders yet', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 8),
+          SizedBox(
+            height: Responsive.spacing(
+              context,
+              mobile: 8,
+              tablet: 30,
+              desktop: 30,
+            ).h,
+          ),
           Text(
             'Create your first folder to get started',
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 32),
-          ElevatedButton.icon(
-            onPressed: () =>
-                Navigator.pushNamed(context, NewFolderScreen.route),
-            icon: const Icon(Icons.add_rounded),
-            label: const Text('Create Folder'),
-          ),
+          // SizedBox(height: 32.h),
+          // ElevatedButton.icon(
+          //   onPressed: () =>
+          //       Navigator.pushNamed(context, NewFolderScreen.route),
+          //   icon: const Icon(Icons.add_rounded),
+          //   label: const Text('Create Folder'),
+          // ),
         ],
       ),
     );
@@ -268,15 +396,15 @@ class _FolderListScreenState extends State<FolderListScreen> {
         children: [
           Icon(
             Icons.search_off_rounded,
-            size: 64,
+            size: 64.sp,
             color: AppTheme.textTertiary,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             'No folders found',
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Try a different search term',
             style: Theme.of(context).textTheme.bodyMedium,
@@ -292,7 +420,14 @@ class _FolderListScreenState extends State<FolderListScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(
+              Responsive.borderRadius(
+                context,
+                mobile: 20.0,
+                tablet: 24.0,
+                desktop: 28.0,
+              ).r,
+            ),
           ),
           title: const Text('Delete Folders'),
           content: Text(

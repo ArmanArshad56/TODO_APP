@@ -3,8 +3,10 @@
 import 'package:todo_app/src/controller/appstate_controller.dart';
 import 'package:todo_app/src/model/note_model.dart';
 import 'package:todo_app/src/theme/app_theme.dart';
+import 'package:todo_app/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NoteEditorScreen extends StatefulWidget {
   static const route = '/editor';
@@ -115,69 +117,110 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
+      body: ResponsiveContainer(
+        padding: Responsive.padding(
+          context,
+          mobile: 20.0,
+          tablet: 32.0,
+          desktop: 48.0,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                controller: title,
-                focusNode: _titleFocus,
-                textInputAction: TextInputAction.next,
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-                decoration: InputDecoration(
-                  hintText: 'Title',
-                  hintStyle: TextStyle(
-                    color: AppTheme.textTertiary,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(
+                Responsive.borderRadius(
+                  context,
+                  mobile: 24.0,
+                  tablet: 28.0,
+                  desktop: 32.0,
+                ).r,
+              ),
+              topRight: Radius.circular(
+                Responsive.borderRadius(
+                  context,
+                  mobile: 24.0,
+                  tablet: 28.0,
+                  desktop: 32.0,
+                ).r,
+              ),
+            ),
+          ),
+          child: Padding(
+            padding: Responsive.padding(
+              context,
+              mobile: 20.0,
+              tablet: 32.0,
+              desktop: 48.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: title,
+                  focusNode: _titleFocus,
+                  textInputAction: TextInputAction.next,
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                onSubmitted: (_) => _descriptionFocus.requestFocus(),
-              ),
-              const SizedBox(height: 8),
-              Text(createdDate, style: Theme.of(context).textTheme.bodySmall),
-              const SizedBox(height: 24),
-              Expanded(
-                child: TextField(
-                  controller: description,
-                  focusNode: _descriptionFocus,
-                  maxLines: null,
-                  expands: true,
-                  textAlignVertical: TextAlignVertical.top,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(height: 1.6, fontSize: 16),
                   decoration: InputDecoration(
-                    hintText: 'Start writing...',
+                    hintText: 'Title',
                     hintStyle: TextStyle(
                       color: AppTheme.textTertiary,
-                      fontSize: 16,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
                     ),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.zero,
                   ),
+                  onSubmitted: (_) => _descriptionFocus.requestFocus(),
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: Responsive.spacing(
+                    context,
+                    mobile: 8.0,
+                    tablet: 10.0,
+                    desktop: 12.0,
+                  ).h,
+                ),
+                Text(createdDate, style: Theme.of(context).textTheme.bodySmall),
+                SizedBox(
+                  height: Responsive.spacing(
+                    context,
+                    mobile: 24.0,
+                    tablet: 28.0,
+                    desktop: 32.0,
+                  ).h,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: description,
+                    focusNode: _descriptionFocus,
+                    maxLines: null,
+                    expands: true,
+                    textAlignVertical: TextAlignVertical.top,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge?.copyWith(height: 1.6, fontSize: 16),
+                    decoration: InputDecoration(
+                      hintText: 'Start writing...',
+                      hintStyle: TextStyle(
+                        color: AppTheme.textTertiary,
+                        fontSize: 16,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(20),
+        padding: Responsive.padding(context),
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [

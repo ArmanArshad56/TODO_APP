@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTheme {
   // Modern color palette
@@ -35,7 +36,7 @@ class AppTheme {
         centerTitle: false,
         titleTextStyle: TextStyle(
           color: textPrimary,
-          fontSize: 28,
+          fontSize: 28.sp,
           fontWeight: FontWeight.bold,
           letterSpacing: -0.5,
         ),
@@ -43,43 +44,44 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
         color: surfaceCard,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: Colors.grey.shade50,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5),
+          borderRadius: BorderRadius.circular(14.r),
+          borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5.w),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5),
+          borderRadius: BorderRadius.circular(14.r),
+          borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5.w),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: primaryPurple, width: 2),
+          borderRadius: BorderRadius.circular(14.r),
+          borderSide: BorderSide(color: primaryPurple, width: 2.w),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: accentPink, width: 1.5),
+          borderRadius: BorderRadius.circular(14.r),
+          borderSide: BorderSide(color: accentPink, width: 1.5.w),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: accentPink, width: 2),
+          borderRadius: BorderRadius.circular(14.r),
+          borderSide: BorderSide(color: accentPink, width: 2.w),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 16,
-        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
         hintStyle: TextStyle(color: textTertiary),
       ),
       listTileTheme: ListTileThemeData(
         iconColor: textSecondary,
         textColor: textPrimary,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: primaryPurple,
@@ -92,12 +94,12 @@ class AppTheme {
           backgroundColor: primaryPurple,
           foregroundColor: Colors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
           ),
-          textStyle: const TextStyle(
-            fontSize: 16,
+          textStyle: TextStyle(
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.5,
           ),
@@ -106,41 +108,41 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: primaryPurple,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          textStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
         ),
       ),
       textTheme: TextTheme(
         displayLarge: TextStyle(
           color: textPrimary,
-          fontSize: 32,
+          fontSize: 32.sp,
           fontWeight: FontWeight.bold,
           letterSpacing: -1,
         ),
         titleLarge: TextStyle(
           color: textPrimary,
-          fontSize: 24,
+          fontSize: 24.sp,
           fontWeight: FontWeight.bold,
           letterSpacing: -0.5,
         ),
         titleMedium: TextStyle(
           color: textPrimary,
-          fontSize: 20,
+          fontSize: 20.sp,
           fontWeight: FontWeight.w600,
         ),
         bodyLarge: TextStyle(
           color: textPrimary,
-          fontSize: 16,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w500,
         ),
         bodyMedium: TextStyle(
           color: textSecondary,
-          fontSize: 14,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w400,
         ),
         bodySmall: TextStyle(
           color: textTertiary,
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w400,
         ),
       ),
