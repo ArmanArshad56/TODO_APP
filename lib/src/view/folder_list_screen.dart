@@ -95,7 +95,7 @@ class _FolderListScreenState extends State<FolderListScreen> {
                               context,
                               mobile: 1.25,
                               tablet: 0.9,
-                              desktop: 1.2,
+                              desktop: 1.3,
                             ),
                             children: folders.map((name) {
                               final noteCount = app.notes[name]?.length ?? 0;
@@ -227,7 +227,7 @@ class _FolderListScreenState extends State<FolderListScreen> {
                           context,
                           mobile: 12.0,
                           tablet: 14.0,
-                          desktop: 16.0,
+                          desktop: 14.0,
                         ).r,
                       ),
                     ),
@@ -254,7 +254,7 @@ class _FolderListScreenState extends State<FolderListScreen> {
                             context,
                             mobile: 24.0,
                             tablet: 20.0,
-                            desktop: 14.0,
+                            desktop: 12.0,
                           ).sp,
                           fontWeight: FontWeight.bold,
                           // letterSpacing: -0.5,
@@ -278,7 +278,7 @@ class _FolderListScreenState extends State<FolderListScreen> {
                             context,
                             mobile: 13.0,
                             tablet: 14.0,
-                            desktop: 10.0,
+                            desktop: 6.0,
                           ).sp,
                           fontWeight: FontWeight.w500,
                         ),
@@ -294,13 +294,13 @@ class _FolderListScreenState extends State<FolderListScreen> {
                   context,
                   mobile: 12.0,
                   tablet: 14.0,
-                  desktop: 16.0,
+                  desktop: 24.0,
                 ).h,
                 right: Responsive.spacing(
                   context,
                   mobile: 12.0,
                   tablet: 14.0,
-                  desktop: 16.0,
+                  desktop: 5.0,
                 ).w,
                 child: Container(
                   padding: EdgeInsets.all(
@@ -308,7 +308,7 @@ class _FolderListScreenState extends State<FolderListScreen> {
                       context,
                       mobile: 2.5,
                       tablet: 5.0,
-                      desktop: 6.0,
+                      desktop: 2.0,
                     ).r,
                   ),
                   decoration: BoxDecoration(
@@ -322,7 +322,7 @@ class _FolderListScreenState extends State<FolderListScreen> {
                       context,
                       mobile: 20.0,
                       tablet: 22.0,
-                      desktop: 24.0,
+                      desktop: 8.0,
                     ).sp,
                   ),
                 ),
@@ -363,19 +363,36 @@ class _FolderListScreenState extends State<FolderListScreen> {
               desktop: 30,
             ).h,
           ),
-          Text('No folders yet', style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            'No folders yet',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontSize: Responsive.fontSize(
+                context,
+                mobile: 16,
+                tablet: 16,
+                desktop: 14,
+              ).sp,
+            ),
+          ),
           SizedBox(
             height: Responsive.spacing(
               context,
               mobile: 8,
               tablet: 30,
-              desktop: 30,
+              desktop: 10,
             ).h,
           ),
           Text(
             'Create your first folder to get started',
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontSize: Responsive.fontSize(
+                context,
+                mobile: 16,
+                tablet: 16,
+                desktop: 34,
+              ).sp,
+            ),
+            // textAlign: TextAlign.center,
           ),
           // SizedBox(height: 32.h),
           // ElevatedButton.icon(
@@ -396,18 +413,37 @@ class _FolderListScreenState extends State<FolderListScreen> {
         children: [
           Icon(
             Icons.search_off_rounded,
-            size: 64.sp,
+            size: Responsive.fontSize(
+              context,
+              mobile: 16,
+              tablet: 16,
+              desktop: 32,
+            ).sp,
             color: AppTheme.textTertiary,
           ),
           SizedBox(height: 16.h),
           Text(
             'No folders found',
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontSize: Responsive.fontSize(
+                context,
+                mobile: 16,
+                tablet: 16,
+                desktop: 10,
+              ).sp,
+            ),
           ),
           SizedBox(height: 8.h),
           Text(
             'Try a different search term',
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontSize: Responsive.fontSize(
+                context,
+                mobile: 16,
+                tablet: 16,
+                desktop: 12,
+              ).sp,
+            ),
           ),
         ],
       ),
